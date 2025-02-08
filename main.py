@@ -8,7 +8,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device, flush=True)
 
 model = model.to(device)
-model.test()
+
 optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=50, T_mult=2, eta_min=1e-5)
 
@@ -32,9 +32,7 @@ for epoch in range(epochs):
     loss_train = 0.
     for x, y in train_loader:
         x, y = x.to(device), y.to(device)
-        print(x.shape)
         optimizer.zero_grad()
-
         output = model(x)
         loss = criterion(output, y)
         loss.backward()

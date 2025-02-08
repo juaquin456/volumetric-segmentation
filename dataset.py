@@ -25,6 +25,6 @@ class BrainLoader(Dataset):
         ytensor = torch.LongTensor(yimg)
         ytensor[ytensor == 4] = 3
         ytensor = torch.nn.functional.one_hot(ytensor, 4).permute((3, 0, 1, 2))
-        return torch.nn.functional.pad(torch.FloatTensor(np.array(x)), (0, 5, 0, 0, 0, 0)), torch.nn.functional.pad(ytensor, (0, 5, 0, 0, 0, 0)) 
+        return torch.FloatTensor(np.array(x)), ytensor 
 
 
