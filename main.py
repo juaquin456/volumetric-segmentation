@@ -1,6 +1,7 @@
 from dataset import BrainLoader
 import torch
 from model import model, criterion
+# from a import model, criterion
 from torch.utils.data import DataLoader
 from torchsummary import summary
 
@@ -12,19 +13,19 @@ model = model.to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=50, T_mult=2, eta_min=1e-5)
 
-ds = BrainLoader("./Train")
+ds = BrainLoader("./Train", False)
 N = len(ds)
-train_len = int(0.8 * N)
+train_len = int(0.9 * N)
 val_len = N - train_len
 train_set, val_set = torch.utils.data.random_split(ds, [train_len, val_len])
 
-train_loader = DataLoader(train_set, batch_size=1, shuffle=True)
-val_loader = DataLoader(val_set, batch_size=1)
+train_loader = DataLoader(train_set, batch_size=4, shuffle=True)
+val_loader = DataLoader(val_set, batch_size=4)
 
 
 best_loss = 1000000
 
-epochs = 20 
+epochs = 40 
 print("Starting...", flush=True)
 for epoch in range(epochs):
     model.train()

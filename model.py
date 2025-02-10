@@ -1,6 +1,7 @@
 from unet3d.pytorch3dunet.unet3d.model import UNet3D
 import torch.nn as nn
 import torch
+from lovasz_loss import LovaszSoftmax 
 
 def compute_per_channel_dice(input, target, epsilon=1e-6, weight=None):
     """
@@ -109,7 +110,7 @@ class GeneralizedDiceLoss(_AbstractDiceLoss):
         target = target.float()
 
         if input.size(0) == 1:
-            # for GDL to make sense we need at least 2 channels (see https://arxiv.org/pdf/1707.03237.pdf)
+            # for GDL to make sense we neLovász-Softmax lossd at least 2 channels (see https://arxiv.org/pdf/1707.03237.pdf)
             # put foreground and background voxels in separate channels
             input = torch.cat((input, 1 - input), dim=0)
             target = torch.cat((target, 1 - target), dim=0)
@@ -128,6 +129,7 @@ class GeneralizedDiceLoss(_AbstractDiceLoss):
         return 2 * (intersect.sum() / denominator.sum())
 
 
-model = UNet3D(4, 4, False, f_maps=8, num_levels=4, upsample="deconv")
-criterion = GeneralizedDiceLoss("none")
+model = UNet3D(4, 4, False, f_maps=16, num_levels=4, upsample="deconv")
+#criterion = GeneralizedDiceLoss("none")
+criterion = LovaszSoftmax()
 #criterion = torch.nn.CrossEntropyLoss()
