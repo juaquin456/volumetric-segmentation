@@ -130,6 +130,7 @@ class GeneralizedDiceLoss(_AbstractDiceLoss):
 
 
 model = UNet3D(4, 4, False, f_maps=16, num_levels=4, upsample="deconv")
+# x = torch.zeros((1, 4, 240, 240, 155))
 #criterion = GeneralizedDiceLoss("none")
 criterion = LovaszSoftmax()
 #criterion = torch.nn.CrossEntropyLoss()

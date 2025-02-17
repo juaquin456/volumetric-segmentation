@@ -1,4 +1,4 @@
-from dataset import BrainLoader
+from dataset import BrainDataset 
 import torch
 from model import model, criterion
 # from a import model, criterion
@@ -13,7 +13,7 @@ model = model.to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=50, T_mult=2, eta_min=1e-5)
 
-ds = BrainLoader("./Train", False)
+ds = BrainDataset("./Train", False)
 N = len(ds)
 train_len = int(0.9 * N)
 val_len = N - train_len
@@ -25,14 +25,14 @@ val_loader = DataLoader(val_set, batch_size=4)
 
 best_loss = 1000000
 
-epochs = 40 
+epochs = 200 
 print("Starting...", flush=True)
 for epoch in range(epochs):
     model.train()
     n_train = 0 
     loss_train = 0.
-    for x, y in train_loader:
-        x, y = x.to(device), y.to(device)
+    for d in train_loader:
+        x, y = d["voxel"].to(device), d["mask"].to(device)
         optimizer.zero_grad()
         output = model(x)
         loss = criterion(output, y)
@@ -49,8 +49,8 @@ for epoch in range(epochs):
     loss_val = 0
     with torch.no_grad():
         n_val = 0
-        for x, y in val_loader:
-            x, y = x.to(device), y.to(device)
+        for d in val_loader:
+            x, y = d["voxel"].to(device), d["mask"].to(device)
             output = model(x)
             loss = criterion(output, y)
             loss_val += loss.item() 
