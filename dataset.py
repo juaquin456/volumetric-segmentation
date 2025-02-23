@@ -43,5 +43,6 @@ class BrainDataset(Dataset):
         
         if seg is not None:
             seg[seg == 4] = 3
-        
+        else :
+            seg =  torch.zeros(1)
         return {'voxel': voxel, 'mask': seg}
